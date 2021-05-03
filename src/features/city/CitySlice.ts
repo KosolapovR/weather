@@ -1,24 +1,38 @@
-import { createSlice } from "@reduxjs/toolkit";
-type SliceState = {
-  name?: string;
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+import { weatherAPI } from "../../api";
+
+type CityEntities = {
+  [key: string]: object;
 };
+type SliceState = {
+  entities: CityEntities;
+};
+
+export const fetchWeatherByCity: any = createAsyncThunk(
+  "cityWeather/fetchByIdStatus",
+  async (city: string) => {
+    return await weatherAPI.getWeatherByCity(city);
+  }
+);
 
 export const citySlice = createSlice({
   name: "city",
   initialState: {
-    name: "London",
+    entities: {},
   } as SliceState,
   reducers: {
-    set: (state, action) => {
-      state.name = action.payload;
-    },
-    remove: (state) => {
-      state.name = "";
+    remove: () => {},
+  },
+  extraReducers: {
+    [fetchWeatherByCity.fulfilled]: (state, action) => {
+      const { payload } = action;
+      state.entities[payload?.id?.toString()] = payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { set, remove } = citySlice.actions;
+export const { remove } = citySlice.actions;
 
 export default citySlice.reducer;
