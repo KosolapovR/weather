@@ -1,31 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../store";
-import { fetchWeatherByCity, remove } from "../../features/city/CitySlice";
+import {
+  fetchWeatherByCity,
+  selectAllCities,
+} from "../../features/city/CitySlice";
+import CityTable from "../CityTable";
+import Header from "../Header";
 
 function Page() {
   const dispatch = useDispatch();
-  const city = useSelector((state: RootState) => state.city);
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(fetchWeatherByCity("London"));
-    }, 2000);
+  const allCities = useSelector(selectAllCities);
 
-    setTimeout(() => {
-      dispatch(fetchWeatherByCity("Moscow"));
-    }, 4000);
-  }, []);
+  const handleSubmit = (values: { city: string }) => {
+    dispatch(fetchWeatherByCity(values.city));
+  };
 
   return (
     <div>
-      {city?.entities.toString()}
-      <button
-        onClick={() => {
-          dispatch(remove());
-        }}
-      >
-        Удалить
-      </button>
+      <Header onSubmit={handleSubmit} />
+      <CityTable cities={allCities} />
     </div>
   );
 }
