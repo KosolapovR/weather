@@ -47,10 +47,15 @@ export type CityEntities = {
 export type SliceState = {
   entities: CityEntities[];
   byId: any;
+  currentId: number;
 };
 
 export const selectAllCities = (state: RootState) => {
-  return state.city?.byId.map((id: number) => state.city.entities[id]);
+  return state.city.byId.map((id: number) => state.city.entities[id]);
+};
+
+export const selectCurrentCityWeather = (state: RootState): CityEntities => {
+  return state.city.entities[state.city.currentId];
 };
 
 export const fetchWeatherByCity: any = createAsyncThunk(
@@ -75,8 +80,11 @@ export const citySlice = createSlice({
       action: { payload: CityEntities }
     ) => {
       const { payload } = action;
+      payload.dt = Date.now();
       const { id } = payload;
+
       state.entities[id] = payload;
+      state.currentId = id;
       if (!state.byId.includes(id)) state.byId.push(id);
     },
   },
