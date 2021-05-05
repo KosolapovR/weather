@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   fetchWeatherByCity,
-  selectAllCities,
-  selectCurrentCityWeather,
-} from "../../features/city/CitySlice";
+  fetchWeatherByCoords,
+  selectAllWeatherEntities,
+  selectCurrentWeatherEntity,
+  setCurrentWeatherEntity,
+  removeWeatherEntity,
+} from "../../features/weather/WeatherSlice";
 import CityTable from "../CityTable";
 import Header from "../Header";
 import CurrentWeatherCard from "../CurrentWeatherCard";
@@ -21,13 +24,27 @@ const Column = styled("div")`
 `;
 function Page() {
   const dispatch = useAppDispatch();
-  const allCities = useAppSelector(selectAllCities);
-  const currentCityWeather = useAppSelector(selectCurrentCityWeather);
+  const allCities = useAppSelector(selectAllWeatherEntities);
+  const currentCityWeather = useAppSelector(selectCurrentWeatherEntity);
   const handleSubmit = (values: { city: string }) => {
     dispatch(fetchWeatherByCity(values.city));
   };
 
-  console.log("currentCityWeather", currentCityWeather);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((geo: GeolocationPosition) => {
+      const { latitude, longitude } = geo.coords;
+      dispatch(fetchWeatherByCoords({ lat: latitude, lon: longitude }));
+    });
+  }, []);
+
+  const handleSelectWeatherEntity = (id: number) => {
+    dispatch(setCurrentWeatherEntity(id));
+  };
+
+  const handleDeleteWeatherEntity = (id: number) => {
+    dispatch(removeWeatherEntity(id));
+  };
+
   return (
     <PageContainer>
       <Column>
@@ -41,7 +58,13 @@ function Page() {
             icon={currentCityWeather.weather[0]?.icon}
           />
         )}
-        {!!allCities.length && <CityTable cities={allCities} />}
+        {!!allCities.length && (
+          <CityTable
+            cities={allCities}
+            onDeleteItem={handleDeleteWeatherEntity}
+            onRowPress={handleSelectWeatherEntity}
+          />
+        )}
       </Column>
     </PageContainer>
   );

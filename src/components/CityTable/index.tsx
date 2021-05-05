@@ -1,33 +1,52 @@
 import React from "react";
-import { CityEntities } from "../../features/city/CitySlice";
+import { WeatherEntities } from "../../features/weather/WeatherSlice";
 import CityTableRow from "./CityTableRow";
+import styled from "styled-components";
 
+const StyledTable = styled("table")`
+  margin-top: 20px;
+  border-collapse: collapse;
+  box-shadow: 0 0 12px 0 rgb(0 0 0 / 20%);
+  background: hsla(0, 0%, 100%, 0.1);
+`;
+const Ceil = styled("th")`
+  text-align: center;
+  border: 1px solid #ababab55;
+  background-color: #0b5469;
+  color: #ffffff;
+  padding: 8px;
+`;
 type CityTableProps = {
-  cities: CityEntities[];
+  cities: WeatherEntities[];
+  onRowPress: (id: number) => void;
+  onDeleteItem: (id: number) => void;
 };
 
-const CityTable = ({ cities }: CityTableProps) => {
+const CityTable = ({ cities, onRowPress, onDeleteItem }: CityTableProps) => {
   return (
-    <table>
+    <StyledTable>
       <thead>
         <tr>
-          <th>City</th>
-          <th>lat</th>
-          <th>lon</th>
-          <th>temp</th>
-          <th>temp_max</th>
-          <th>temp_min</th>
-          <th>temp_min</th>
-          <th>feels_like</th>
-          <th>pressure</th>
-          <th>visibility</th>
-          <th>wind.deg</th>
-          <th>wind.speed</th>
+          <Ceil>Город</Ceil>
+          <Ceil>lat</Ceil>
+          <Ceil>lon</Ceil>
+          <Ceil>Температура</Ceil>
+          <Ceil>max</Ceil>
+          <Ceil>min</Ceil>
+          <Ceil>Чувствуется</Ceil>
+          <Ceil>Давление</Ceil>
+          <Ceil>Видимость</Ceil>
+          <Ceil>Направление ветра</Ceil>
+          <Ceil>Скорость ветра</Ceil>
+          <Ceil />
         </tr>
       </thead>
       <tbody>
         {cities.map((item) => (
           <CityTableRow
+            onPress={onRowPress}
+            onDeleteItem={onDeleteItem}
+            id={item.id}
             key={item.id}
             city={item.name}
             coord={item.coord}
@@ -37,7 +56,7 @@ const CityTable = ({ cities }: CityTableProps) => {
           />
         ))}
       </tbody>
-    </table>
+    </StyledTable>
   );
 };
 

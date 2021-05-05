@@ -1,5 +1,6 @@
-import { getWeatherByCity } from "./weatherApi";
+import { getWeatherByCity, getWeatherByCoords } from "./weatherApi";
 
 export const weatherAPI = {
   getWeatherByCity,
+  getWeatherByCoords,
 };

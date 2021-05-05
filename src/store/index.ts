@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import cityReducer from "../features/city/CitySlice";
+import weatherReducer from "../features/weather/WeatherSlice";
 import logger from "redux-logger";
 
 const store = configureStore({
   reducer: {
-    city: cityReducer,
+    weather: weatherReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
